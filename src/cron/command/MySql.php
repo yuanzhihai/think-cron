@@ -34,7 +34,7 @@ class MySql extends Command
             }
         }
     }
-    protected function initialize(){
+    protected function initialize(Input $input, Output $output){
          $this->sql = <<<sql
 CREATE TABLE `{$this->config['table']}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

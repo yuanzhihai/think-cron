@@ -1,5 +1,5 @@
 <?php
-namespace zishuo\cron;
+namespace yzh52521\cron;
 
 use Closure;
 use Cron\CronExpression;

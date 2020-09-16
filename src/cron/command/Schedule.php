@@ -1,5 +1,5 @@
 <?php
-namespace zishuo\cron\command;
+namespace yzh52521\cron\command;
 
 use think\console\Command;
 use think\console\Input;
@@ -16,7 +16,7 @@ class Schedule extends Command
     protected $memory = 128;
     protected function configure()
     {
-        $this->setName('xcron:schedule')
+        $this->setName('cron:schedule')
             ->addArgument('action', Argument::OPTIONAL, "Run command",false)
             ->addOption('memory', null, Option::VALUE_OPTIONAL, 'The memory limit in megabytes', 128)
             ->addOption('daemon', null, Option::VALUE_NONE, 'Run the worker in daemon mode')
@@ -27,13 +27,13 @@ class Schedule extends Command
     {
         $action = $input->getArgument('action');
         $this->memory = $input->getOption('memory');
-        
+
         if ($input->getOption('daemon')) {
             $this->daemon = true;
         }
-        
+
         $this->output = $output;
-        
+
         switch ($action)
         {
             case "start":
@@ -52,7 +52,7 @@ class Schedule extends Command
                 $this->printHelpMessage();
         }
     }
-    
+
     /**
      * @param \Think\Process $process
      * @param  int           $memory
@@ -87,7 +87,7 @@ class Schedule extends Command
             }
         }
     }
-    
+
     protected function checkRunProcess()
     {
         if (($pid = $this->checkProcess()) > 0) {
@@ -96,7 +96,7 @@ class Schedule extends Command
             $this->output->info('The crontab daemon is not running.');
         }
     }
-    
+
     protected function stopProcess()
     {
         if (($pid = $this->checkProcess()) > 0) {
@@ -106,7 +106,7 @@ class Schedule extends Command
             $this->output->info('The crontab daemon is not running.');
         }
     }
-    
+
     protected function resetProcess()
     {
         if (($pid = $this->checkProcess()) > 0) {
@@ -128,7 +128,7 @@ class Schedule extends Command
      * @param int    $timeout
      * @return Process
      */
-    protected function makeProcess($task='xcron:run',$connector=null, $memory = 128,$daemon=null)
+    protected function makeProcess($task='cron:run',$connector=null, $memory = 128,$daemon=null)
     {
         $command = array_filter([
             PHP_BINARY,
@@ -142,7 +142,7 @@ class Schedule extends Command
         });
         return new Process(implode($command," "),env('ROOT_PATH'), null, null,null);
     }
-    
+
     /**
      * 获取进程的PID
      *
@@ -171,7 +171,7 @@ class Schedule extends Command
     {
         die;
     }
-    
+
     /**
      * 检查进程是否存在
      * @return boolean|integer
@@ -190,7 +190,7 @@ class Schedule extends Command
                 if ($pid > 0) return $pid;
             }
         } else {
-            $command = "ps aux|grep -v grep|grep \"xcron:schedule start\"| awk '{print $2}' |xargs";
+            $command = "ps aux|grep -v grep|grep \"cron:schedule start\"| awk '{print $2}' |xargs";
             $process = new Process($command);
             $process->run();
             if ($process->isSuccessful()) {
@@ -230,7 +230,7 @@ class Schedule extends Command
         // '\\' === DIRECTORY_SEPARATOR
         return PATH_SEPARATOR === ';';
     }
-    
+
     protected function printHelpMessage()
     {
         $msg = "<highlight>* Usage: php think {$this->getName()} {start|stop|reset|state} [option]</highlight>";

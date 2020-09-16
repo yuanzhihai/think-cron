@@ -8,7 +8,7 @@ use think\facade\Cache;
 abstract class Task
 {
     /** @var string 任务周期 */
-    public $exptime = '* * * * *';
+    public $expression = '* * * * *';
 
     /** @var bool 任务是否可以重叠执行 */
     public $withoutOverlapping = false;
@@ -21,17 +21,17 @@ abstract class Task
 
     protected $filters = [];
     protected $rejects = [];
-    
+
     //@var array 附加参数
     public $payload = [];
-    
+
     //@var string 任务处理结果
     public $statusDesc = null;
 
-    public function __construct($tasktime=false)
+    public function __construct($taskTime=false)
     {
-        if($tasktime){
-            $this->exptime = $tasktime;
+        if($taskTime){
+            $this->expression = $taskTime;
         }else{
             $this->configure();
         }
@@ -43,33 +43,25 @@ abstract class Task
      */
     public function isDue()
     {
-        return CronExpression::factory($this->exptime)->isDue();
+        return CronExpression::factory($this->expression)->isDue();
     }
 
     /**
      * 下一次执行
      * @return bool
      */
-    public function NextRun($datatime=null)
+    public function NextRun($dateTime=null)
     {
-        return CronExpression::factory($this->exptime)->getNextRunDate($datatime)->format('Y-m-d H:i:s');
+        return CronExpression::factory($this->expression)->getNextRunDate($dateTime)->format('Y-m-d H:i:s');
     }
 
-    /**
-     * 上一次执行
-     * @return bool
-     */
-    public function LastRun($datatime=null)
-    {
-        return CronExpression::factory($this->exptime)->getNextRunDate($datatime)->format('Y-m-d H:i:s');
-    }
 
     /**
      * 配置任务
      */
     protected function configure()
     {
-        
+
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace zishuo\cron\command;
+namespace yzh52521\cron\command;
 
 use think\console\Command;
 use think\console\Input;
@@ -16,13 +16,12 @@ class MySql extends Command
 
     protected function configure()
     {
-        $this->setName('xcron:install')->setDescription('Crontab Data table initialization');
-        $this->config = Config::get('xcron.');
+        $this->setName('cron:install')->setDescription('Crontab Data table initialization');
+        $this->config = Config::pull('cron');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $this->setSql();
         $isTable = Db::execute("SHOW TABLES LIKE '{$this->config['table']}'");
         if( $isTable ){
             $output->comment("The data table already exists");
@@ -35,7 +34,7 @@ class MySql extends Command
             }
         }
     }
-    protected function setSql(){
+    protected function initialize(){
          $this->sql = <<<sql
 CREATE TABLE `{$this->config['table']}` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +42,7 @@ CREATE TABLE `{$this->config['table']}` (
   `count` int(11) NOT NULL DEFAULT '0' COMMENT '执行次数',
   `status` int(1) NOT NULL DEFAULT '1' COMMENT '任务状态',
   `title` char(50) DEFAULT NULL COMMENT '任务名称',
-  `exp_time` char(200) NOT NULL DEFAULT '* * * * *' COMMENT '任务周期',
+  `expression` char(200) NOT NULL DEFAULT '* * * * *' COMMENT '任务周期',
   `task` varchar(500) DEFAULT NULL COMMENT '任务命令',
   `data` longtext COMMENT '附件参数',
   `status_desc` varchar(1000) DEFAULT NULL COMMENT '上次执行结果',
@@ -56,13 +55,13 @@ CREATE TABLE `{$this->config['table']}` (
 sql;
     }
 
-    public function add_xcron($title, $task, $data = [], $exp_time=null)
+    public function add_cron($title, $task, $data = [], $expression=null)
     {
         return Db::table($this->config['table'])->insert([
             'title'     => $title,
             'task'      => $task,
             'data'   => json_encode($data, JSON_UNESCAPED_UNICODE),
-            'exp_time'   => empty($exp_time)?:$exp_time,
+            'expression'   => empty($expression)?:$expression,
             'create_time'       => time(),
             'update_time'       => time(),
         ]);

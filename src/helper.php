@@ -8,18 +8,18 @@ use zishuo\cron\command\MySql;
     Schedule::class,
     MySql::class,
 ]);
-if (!function_exists('add_xcron')) {
+if (!function_exists('add_cron')) {
 
     /**
      * 添加到计划任务
      * @param string $title
      * @param string $task
      * @param array $data
-     * @param string $exptime
+     * @param string $expression
      * @return bool
      */
-    function add_xcron($title, $task, $data = [], $exp_time=null)
+    function add_cron($title, $task, $data = [], $expression=null)
     {
-        return (new MySql)->add_xcron($title, $task, $data, $exp_time);
+        return (new MySql)->add_cron($title, $task, $data, $expression);
     }
 }

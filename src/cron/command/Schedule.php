@@ -7,7 +7,7 @@ use think\console\input\Option;
 use think\console\input\Argument;
 use think\console\Output;
 use think\facade\Cache;
-use think\Process;
+use Symfony\Component\Process\Process;
 
 
 class Schedule extends Command
@@ -140,7 +140,7 @@ class Schedule extends Command
         ], function ($value) {
             return !is_null($value);
         });
-        return new Process(implode($command," "),env('ROOT_PATH'), null, null,null);
+        return new Process(implode(" ",$command),null, null, null,null);
     }
 
     /**

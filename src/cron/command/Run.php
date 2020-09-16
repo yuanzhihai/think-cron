@@ -97,7 +97,7 @@ class Run extends Command
      */
     protected function serverShouldRun($task)
     {
-        $key = $task->mutexName() . $this->startedAt->format('H:i');;
+        $key = $task->mutexName() . $this->startedAt->format('H:i');
         if (Cache::has($key)) {
             return false;
         }

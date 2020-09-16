@@ -1,7 +1,7 @@
 <?php
-use zishuo\cron\command\Run;
-use zishuo\cron\command\Schedule;
-use zishuo\cron\command\MySql;
+use yzh52521\cron\command\Run;
+use yzh52521\cron\command\Schedule;
+use yzh52521\cron\command\MySql;
 
 \think\Console::addDefaultCommands([
     Run::class,

@@ -2,6 +2,7 @@
 
 namespace yzh52521\cron\command;
 
+use Carbon\Carbon;
 use think\facade\Cache;
 use think\facade\Config;
 use think\console\Command;
@@ -24,7 +25,7 @@ class Run extends Command
 
     protected function configure()
     {
-        $this->startedAt = date('Y-m-d H:i:s');
+        $this->startedAt = Carbon::now();
         $this->setName('cron:run')
             ->addOption('memory', null, Option::VALUE_OPTIONAL, 'The memory limit in megabytes', 128)
             ->setDescription('Running a scheduled task');
@@ -96,7 +97,7 @@ class Run extends Command
      */
     protected function serverShouldRun($task)
     {
-        $key = $task->mutexName() . $this->startedAt;
+        $key = $task->mutexName() . $this->startedAt->format('H:i');;
         if (Cache::has($key)) {
             return false;
         }

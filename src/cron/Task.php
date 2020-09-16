@@ -1,12 +1,15 @@
 <?php
 namespace yzh52521\cron;
 
+use Carbon\Carbon;
 use Closure;
 use Cron\CronExpression;
 use think\facade\Cache;
-
+use DateTimeZone;
 abstract class Task
 {
+    /** @var DateTimeZone|string 时区 */
+    public $timezone;
     /** @var string 任务周期 */
     public $expression = '* * * * *';
 
@@ -43,7 +46,8 @@ abstract class Task
      */
     public function isDue()
     {
-        return CronExpression::factory($this->expression)->isDue();
+        $date = Carbon::now($this->timezone);
+        return CronExpression::factory($this->expression)->isDue($date->toDateTimeString());
     }
 
     /**

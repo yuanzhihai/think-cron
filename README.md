@@ -4,7 +4,7 @@
 
 ## 安装方法
 ```
-composer require zishuo/think-cron
+composer require yzh52521/think-cron
 ```
 
 ## 使用方法
@@ -16,14 +16,14 @@ composer require zishuo/think-cron
 
 namespace app\task;
 
-use zishuo\cron\Task;
+use yzh52521\cron\Task;
 
 class DemoTask extends Task
 {
 
     public function configure()
     {
-        $this->exptime = "*/1 * * * *"; 
+        $this->expression = "*/1 * * * *"; 
         //设置任务的周期，每分钟执行一次，使用标准的Crontab语法,当配置文件中设置了执行周期将优先配置文件中的设置
     }
 
@@ -43,7 +43,7 @@ class DemoTask extends Task
 ```
 
 ### 配置
-配置文件位于 application/extra/xcron.php
+配置文件位于 application/cron.php
 
 
 ```
@@ -52,10 +52,10 @@ return [
     'table' =>    'think_cron', //驱动类型为mysql时存储任务所用的表
     'tasks'   => [             //为文件存储时定时任务列表格式
         'demo'  =>[
-            'title'     =>  '测试',
-            'task'      =>  \app\task\DemoTask::class,
-            'data'      =>  [],
-            'exptime'       =>  '* * * * *'
+            'title'       =>  '测试',
+            'task'        =>  \app\task\DemoTask::class,
+            'data'        =>  [],
+            'expression'  =>  '* * * * *'
         ]
     ]
 ];
@@ -68,7 +68,7 @@ CREATE TABLE `think_cron` (
   `status` int(1) NOT NULL DEFAULT '1' COMMENT '任务状态',
   `count` int(11) NOT NULL DEFAULT '0' COMMENT '执行次数',
   `title` char(50) DEFAULT NULL COMMENT '任务名称',
-  `exptime` char(200) NOT NULL DEFAULT '* * * * *' COMMENT '任务周期',
+  `expression` char(200) NOT NULL DEFAULT '* * * * *' COMMENT '任务周期',
   `task` varchar(500) DEFAULT NULL COMMENT '任务命令',
   `data` longtext COMMENT '附加参数',
   `status_desc` varchar(1000) DEFAULT NULL COMMENT '上次执行结果',
@@ -86,15 +86,15 @@ CREATE TABLE `think_cron` (
  * @param string $title 任务名
  * @param string $task  类名
  * @param array $data   参数 数组格式
- * @param string $exptime 任务执行周期,使用标准的Crontab语法,默认60秒
+ * @param string $expression 任务执行周期,使用标准的Crontab语法,默认60秒
  * @return bool
  */
- add_xcron($title, $task, $data = [], $exptime=null);
+ add_cron($title, $task, $data = [], $expression=null);
 ```
 ### 创建计划任务例子
 ```
 $data = ['name' => 'thinkphp'];
-add_xcron('test', \app\task\DemoTask::class, $data, '*/5 * * * *');
+add_cron('test', \app\task\DemoTask::class, $data, '*/5 * * * *');
 ```
 
 ### 任务监听
@@ -105,13 +105,13 @@ add_xcron('test', \app\task\DemoTask::class, $data, '*/5 * * * *');
 
 ##### 起一个常驻进程，或者配合supervisor使用 (推荐)
 ~~~
-php think xcron:schedule start --daemon
+php think cron:schedule start --daemon
 ~~~
 
 ##### 创建 supervisor 
 ```
 [program:php]
-command= /usr/bin/php think xcron:schedule start; 被监控进程
+command= /usr/bin/php think cron:schedule start; 被监控进程
 directory=/home/wwwroot/shabi.in
 process_name=%(program_name)s
 numprocs=1 ;启动几个进程 别改 扩展限制了一个进程运行
@@ -127,7 +127,7 @@ stdout_logfile=/root/supervisor.log ;stdout文件
 
 #### 在系统的计划任务里添加
 ~~~
-* * * * * php /path/to/think xcron:run >> /dev/null 2>&1
+* * * * * php /path/to/think cron:run >> /dev/null 2>&1
 ~~~
 
 ## 特别鸣谢
@@ -135,4 +135,4 @@ stdout_logfile=/root/supervisor.log ;stdout文件
 
 ## 写在最后
 - 代码中有很多不成熟的地方，期待您的issue。最好能fork，将您的想法贡献出来。让这个项目更适应更多的场景。
-- 邮箱：i@shabi.in
+- 邮箱：396751927@qq.com

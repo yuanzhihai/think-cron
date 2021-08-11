@@ -8,6 +8,8 @@ use think\facade\Cache;
 use DateTimeZone;
 abstract class Task
 {
+    use ManagesFrequencies;
+
     /** @var DateTimeZone|string 时区 */
     public $timezone;
     /** @var string 任务周期 */
